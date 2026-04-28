@@ -1,0 +1,11 @@
+@"
+__pycache__/
+.env
+venv/
+.venv/
+.service_station/
+web/node_modules/
+web/build/
+.DS_Store
+.vscode/
+"@ | Out-File -FilePath .gitignore -Encoding utf8
