@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: Arial, sans-serif; font-size: 13px; color: #333; margin: 40px; }
+  .header { display: flex; justify-content: space-between; border-bottom: 2px solid #e74c3c; padding-bottom: 16px; margin-bottom: 24px; }
+  .business-name { font-size: 22px; font-weight: bold; color: #e74c3c; }
+  .invoice-title { font-size: 18px; font-weight: bold; color: #555; }
+  table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  th { background: #e74c3c; color: white; padding: 8px 12px; text-align: left; }
+  td { padding: 8px 12px; border-bottom: 1px solid #eee; }
+  .totals { margin-top: 16px; text-align: right; }
+  .totals td { border: none; padding: 4px 12px; }
+  .total-row { font-weight: bold; font-size: 15px; color: #e74c3c; }
+  .footer { margin-top: 40px; text-align: center; color: #888; font-size: 11px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="business-name">{{ business_name }}</div>
+      <div>{{ business_address }}</div>
+      <div>Phone: {{ business_phone }}</div>
+    </div>
+    <div style="text-align:right">
+      <div class="invoice-title">INVOICE</div>
+      <div><strong>#{{ invoice_number }}</strong></div>
+      <div>Date: {{ invoice_date }}</div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:16px">
+    <strong>Bill To:</strong><br>
+    {{ customer_name }}<br>
+    {{ customer_phone }}<br>
+    Vehicle: {{ vehicle_number }} ({{ vehicle_model }})
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Service / Part</th><th>Qty</th><th>Unit Price (₹)</th><th>Total (₹)</th></tr>
+    </thead>
+    <tbody>
+      {% for item in line_items %}
+      <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.qty }}</td>
+        <td>{{ "%.2f"|format(item.unit_price) }}</td>
+        <td>{{ "%.2f"|format(item.total) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <table class="totals" style="width:300px; margin-left:auto; margin-top:16px">
+    <tr><td>Subtotal:</td><td>₹{{ "%.2f"|format(subtotal) }}</td></tr>
+    {% if discount > 0 %}<tr><td>Discount:</td><td>- ₹{{ "%.2f"|format(discount) }}</td></tr>{% endif %}
+    {% if tax > 0 %}<tr><td>GST/Tax:</td><td>₹{{ "%.2f"|format(tax) }}</td></tr>{% endif %}
+    <tr class="total-row"><td>Total:</td><td>₹{{ "%.2f"|format(total) }}</td></tr>
+  </table>
+
+  <div class="footer">
+    Thank you for choosing {{ business_name }}! We look forward to serving you again.<br>
+    New Ranip, Ahmedabad, Gujarat
+  </div>
+</body>
+</html>
