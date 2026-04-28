@@ -162,3 +162,5 @@ After running migrations, use the Swagger UI at `http://localhost:8000/docs`:
 | POST | `/api/offers/{id}/notify` | Broadcast offer via WhatsApp |
 | POST | `/api/feedback/` | Submit rating |
 | GET | `/api/dashboard/stats` | Admin dashboard stats |
+=======
+# patel_service_center
