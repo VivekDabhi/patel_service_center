@@ -27,9 +27,14 @@ class Appointment(Base):
     __tablename__ = "appointments"
 
     id = Column(Integer, primary_key=True, index=True)
-    customer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    vehicle_id = Column(Integer, ForeignKey("vehicles.id"), nullable=False)
-    service_types = Column(JSON, nullable=False)  # list of ServiceType values
+    customer_id = Column(Integer, ForeignKey("users.id"), nullable=True)   # null for guests
+    vehicle_id = Column(Integer, ForeignKey("vehicles.id"), nullable=True)  # null for guests
+    # Guest fields
+    guest_name = Column(String(150), nullable=True)
+    guest_phone = Column(String(20), nullable=True)
+    guest_vehicle_number = Column(String(30), nullable=True)
+    guest_vehicle_model = Column(String(100), nullable=True)
+    service_types = Column(JSON, nullable=False)
     scheduled_date = Column(DateTime(timezone=True), nullable=False)
     status = Column(Enum(AppointmentStatus), default=AppointmentStatus.pending)
     notes = Column(Text, nullable=True)

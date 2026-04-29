@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 
 const services = [
   { icon: '🛢️', title: 'Oil Change', desc: 'Engine oil & filter replacement' },
@@ -46,8 +45,6 @@ const stats = [
 ];
 
 export default function Home() {
-  const { user } = useAuth();
-
   return (
     <>
       {/* ── Hero ── */}
@@ -59,14 +56,9 @@ export default function Home() {
           <p className="lead mb-1 opacity-75">New Ranip Two-Wheeler Service Station</p>
           <p className="mb-4 opacity-50 small">Bikes · Scooters · Activa · All Brands</p>
           <div className="d-flex gap-3 justify-content-center flex-wrap">
-            <Link to={user ? '/book' : '/register'} className="btn btn-danger btn-lg fw-semibold px-4">
+            <Link to="/book" className="btn btn-danger btn-lg fw-semibold px-4">
               🔧 Book Service Now
             </Link>
-            {user && (
-              <Link to="/appointments" className="btn btn-outline-light btn-lg px-4">
-                📍 Track My Service
-              </Link>
-            )}
           </div>
         </div>
       </div>

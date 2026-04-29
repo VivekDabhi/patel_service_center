@@ -18,7 +18,7 @@ export default function Login() {
       const { data } = await api.post('/api/auth/login', params);
       login(data.user, data.access_token);
       toast.success(`Welcome back, ${data.user.name}!`);
-      navigate(data.user.role === 'admin' ? '/admin' : '/');
+      navigate('/admin');
     } catch {
       toast.error('Invalid phone or password');
     } finally {
@@ -31,8 +31,8 @@ export default function Login() {
       <div className="container" style={{ maxWidth: 420 }}>
         <div className="card shadow-sm border-0">
           <div className="card-body p-4">
-            <h4 className="fw-bold text-danger mb-1">🔧 Service Station</h4>
-            <p className="text-muted mb-4">New Ranip, Ahmedabad</p>
+            <h4 className="fw-bold text-danger mb-1">🔧 Admin Login</h4>
+            <p className="text-muted mb-4">New Ranip Two-Wheeler Service Station</p>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label className="form-label">Phone Number</label>
@@ -53,7 +53,7 @@ export default function Login() {
               </button>
             </form>
             <p className="text-center mt-3 mb-0">
-              New customer? <Link to="/register">Register here</Link>
+              <Link to="/">← Back to Home</Link>
             </p>
           </div>
         </div>

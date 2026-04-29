@@ -13,7 +13,7 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const handleLogout = () => { logout(); navigate('/login'); };
+  const handleLogout = () => { logout(); navigate('/'); };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -137,12 +137,7 @@ export default function Navbar() {
                   )}
                 </li>
               </>
-            ) : (
-              <>
-                <li className="nav-item"><Link className="nav-link" to="/login">Login</Link></li>
-                <li className="nav-item"><Link className="btn btn-light btn-sm" to="/register">Register</Link></li>
-              </>
-            )}
+            ) : null}
           </ul>
         </div>
       </div>

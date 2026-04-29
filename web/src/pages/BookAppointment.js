@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import api from '../api';
 import toast from 'react-hot-toast';
 
@@ -14,45 +13,38 @@ const SERVICE_OPTIONS = [
   { value: 'other',               label: 'Other',               icon: '📋' },
 ];
 
+const EMPTY = {
+  guest_name: '', guest_phone: '', guest_vehicle_number: '', guest_vehicle_model: '',
+  service_types: [], scheduled_date: '', notes: '',
+  pickup_required: false, pickup_address: '', drop_required: false, drop_address: '',
+};
+
 export default function BookAppointment() {
-  const [vehicles, setVehicles] = useState([]);
-  const [form, setForm] = useState({
-    vehicle_id: '', service_types: [], scheduled_date: '',
-    notes: '', pickup_required: false, pickup_address: '',
-    drop_required: false, drop_address: ''
-  });
+  const [form, setForm] = useState(EMPTY);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [booked, setBooked] = useState(false);
 
-  useEffect(() => {
-    api.get('/api/vehicles/').then(r => setVehicles(r.data));
-  }, []);
+  const set = field => e => setForm(f => ({
+    ...f, [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value,
+  }));
 
-  const toggleService = (value) => {
-    setForm(prev => ({
-      ...prev,
-      service_types: prev.service_types.includes(value)
-        ? prev.service_types.filter(s => s !== value)
-        : [...prev.service_types, value]
-    }));
-  };
-
-  const set = field => e => setForm(prev => ({
-    ...prev,
-    [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value
+  const toggleService = value => setForm(f => ({
+    ...f,
+    service_types: f.service_types.includes(value)
+      ? f.service_types.filter(s => s !== value)
+      : [...f.service_types, value],
   }));
 
   const handleSubmit = async e => {
     e.preventDefault();
-    if (form.service_types.length === 0) {
-      toast.error('Please select at least one service type');
-      return;
-    }
+    if (form.service_types.length === 0) { toast.error('Select at least one service'); return; }
     setLoading(true);
     try {
-      await api.post('/api/appointments/', { ...form, vehicle_id: parseInt(form.vehicle_id) });
-      toast.success('Appointment booked! Check WhatsApp for confirmation.');
-      navigate('/appointments');
+      await api.post('/api/appointments/guest', {
+        ...form,
+        guest_phone: `+91${form.guest_phone}`,
+      });
+      setBooked(true);
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Booking failed');
     } finally {
@@ -60,82 +52,83 @@ export default function BookAppointment() {
     }
   };
 
+  if (booked) return (
+    <div className="container py-5 text-center" style={{ maxWidth: 480 }}>
+      <div style={{ fontSize: 64 }}>✅</div>
+      <h3 className="fw-bold mt-3">Booking Confirmed!</h3>
+      <p className="text-muted">We've received your appointment request. Our team will contact you on <strong>+91{form.guest_phone}</strong> to confirm.</p>
+      <button className="btn btn-danger mt-2" onClick={() => { setForm(EMPTY); setBooked(false); }}>
+        Book Another
+      </button>
+    </div>
+  );
+
   return (
     <div className="container py-5" style={{ maxWidth: 640 }}>
-      <h3 className="fw-bold mb-4">📅 Book a Service Appointment</h3>
-
-      {vehicles.length === 0 && (
-        <div className="alert alert-warning">
-          No vehicles found. <a href="/vehicles">Add a vehicle first</a>.
-        </div>
-      )}
+      <h3 className="fw-bold mb-1">📅 Book a Service</h3>
+      <p className="text-muted mb-4">No registration needed — just fill in your details</p>
 
       <form onSubmit={handleSubmit} className="card border-0 shadow-sm p-4">
 
-        {/* Vehicle */}
-        <div className="mb-4">
-          <label className="form-label fw-semibold">Select Vehicle</label>
-          <select className="form-select" required value={form.vehicle_id} onChange={set('vehicle_id')}>
-            <option value="">-- Choose vehicle --</option>
-            {vehicles.map(v => (
-              <option key={v.id} value={v.id}>{v.vehicle_number} — {v.model}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Service Types — multi-select cards */}
-        <div className="mb-4">
-          <label className="form-label fw-semibold">
-            Service Type
-            <span className="text-muted fw-normal ms-2" style={{ fontSize: 13 }}>
-              (select one or more)
-            </span>
-          </label>
-          <div className="row g-2">
-            {SERVICE_OPTIONS.map(opt => {
-              const selected = form.service_types.includes(opt.value);
-              return (
-                <div className="col-6 col-md-3" key={opt.value}>
-                  <div
-                    onClick={() => toggleService(opt.value)}
-                    style={{
-                      border: `2px solid ${selected ? '#dc3545' : '#dee2e6'}`,
-                      borderRadius: 10,
-                      padding: '10px 8px',
-                      textAlign: 'center',
-                      cursor: 'pointer',
-                      background: selected ? '#fff5f5' : 'white',
-                      transition: 'all 0.15s',
-                      userSelect: 'none',
-                    }}
-                  >
-                    <div style={{ fontSize: 24 }}>{opt.icon}</div>
-                    <div style={{
-                      fontSize: 12, fontWeight: selected ? 600 : 400,
-                      color: selected ? '#dc3545' : '#555', marginTop: 4,
-                    }}>
-                      {opt.label}
-                    </div>
-                    {selected && (
-                      <div style={{ fontSize: 11, color: '#dc3545', marginTop: 2 }}>✓ Selected</div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+        {/* Contact Details */}
+        <h6 className="fw-bold text-danger mb-3">Your Details</h6>
+        <div className="row g-3 mb-4">
+          <div className="col-md-6">
+            <label className="form-label">Full Name</label>
+            <input className="form-control" placeholder="Ramesh Patel" required
+              value={form.guest_name} onChange={set('guest_name')} />
           </div>
-          {form.service_types.length > 0 && (
-            <div className="mt-2">
-              {form.service_types.map(s => (
-                <span key={s} className="badge bg-danger me-1">
-                  {SERVICE_OPTIONS.find(o => o.value === s)?.label}
-                </span>
-              ))}
+          <div className="col-md-6">
+            <label className="form-label">Mobile Number</label>
+            <div className="input-group">
+              <span className="input-group-text">+91</span>
+              <input className="form-control" placeholder="9876543210" required
+                maxLength={10} value={form.guest_phone}
+                onChange={e => setForm(f => ({ ...f, guest_phone: e.target.value.replace(/\D/g, '').slice(0, 10) }))} />
             </div>
-          )}
+          </div>
         </div>
 
-        {/* Date & Time */}
+        {/* Vehicle Details */}
+        <h6 className="fw-bold text-danger mb-3">Vehicle Details</h6>
+        <div className="row g-3 mb-4">
+          <div className="col-md-6">
+            <label className="form-label">Vehicle Number</label>
+            <input className="form-control" placeholder="GJ01AB1234" required
+              value={form.guest_vehicle_number} onChange={set('guest_vehicle_number')} />
+          </div>
+          <div className="col-md-6">
+            <label className="form-label">Vehicle Model</label>
+            <input className="form-control" placeholder="Honda Activa 6G" required
+              value={form.guest_vehicle_model} onChange={set('guest_vehicle_model')} />
+          </div>
+        </div>
+
+        {/* Service Types */}
+        <h6 className="fw-bold text-danger mb-3">Select Service</h6>
+        <div className="row g-2 mb-4">
+          {SERVICE_OPTIONS.map(opt => {
+            const selected = form.service_types.includes(opt.value);
+            return (
+              <div className="col-6 col-md-3" key={opt.value}>
+                <div onClick={() => toggleService(opt.value)} style={{
+                  border: `2px solid ${selected ? '#dc3545' : '#dee2e6'}`,
+                  borderRadius: 10, padding: '10px 8px', textAlign: 'center',
+                  cursor: 'pointer', background: selected ? '#fff5f5' : 'white',
+                  transition: 'all 0.15s', userSelect: 'none',
+                }}>
+                  <div style={{ fontSize: 24 }}>{opt.icon}</div>
+                  <div style={{ fontSize: 12, fontWeight: selected ? 600 : 400, color: selected ? '#dc3545' : '#555', marginTop: 4 }}>
+                    {opt.label}
+                  </div>
+                  {selected && <div style={{ fontSize: 11, color: '#dc3545' }}>✓</div>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Date */}
         <div className="mb-3">
           <label className="form-label fw-semibold">Preferred Date & Time</label>
           <input type="datetime-local" className="form-control" required
@@ -163,7 +156,7 @@ export default function BookAppointment() {
         )}
 
         {/* Drop */}
-        <div className="mb-2 form-check">
+        <div className="mb-3 form-check">
           <input type="checkbox" className="form-check-input" id="drop"
             checked={form.drop_required} onChange={set('drop_required')} />
           <label className="form-check-label" htmlFor="drop">🏠 Request Drop Service</label>
@@ -175,10 +168,7 @@ export default function BookAppointment() {
           </div>
         )}
 
-        <button
-          className="btn btn-danger w-100 mt-2"
-          disabled={loading || !form.vehicle_id || form.service_types.length === 0}
-        >
+        <button className="btn btn-danger w-100 mt-2" disabled={loading || form.service_types.length === 0}>
           {loading ? 'Booking...' : `Confirm Booking${form.service_types.length > 1 ? ` (${form.service_types.length} services)` : ''}`}
         </button>
       </form>

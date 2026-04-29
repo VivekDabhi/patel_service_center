@@ -7,10 +7,23 @@ from app.core.security import get_current_user, require_admin
 from app.models.appointment import Appointment
 from app.models.vehicle import Vehicle
 from app.models.user import User
-from app.schemas.appointment import AppointmentCreate, AppointmentStatusUpdate, AppointmentOut
+from app.schemas.appointment import AppointmentCreate, GuestAppointmentCreate, AppointmentStatusUpdate, AppointmentOut
 from app.services.notification import notify_booking_confirmed, notify_status_update
 
 router = APIRouter(prefix="/api/appointments", tags=["Appointments"])
+
+@router.post("/guest", response_model=AppointmentOut)
+def guest_book_appointment(data: GuestAppointmentCreate, db: Session = Depends(get_db)):
+    appointment = Appointment(**data.model_dump())
+    db.add(appointment)
+    db.commit()
+    db.refresh(appointment)
+    notify_booking_confirmed(
+        data.guest_name, data.guest_phone,
+        appointment.scheduled_date.strftime("%d %b %Y %I:%M %p"),
+        ", ".join(s.replace("_", " ").title() for s in data.service_types)
+    )
+    return appointment
 
 @router.post("/", response_model=AppointmentOut)
 def book_appointment(data: AppointmentCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
