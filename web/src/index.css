@@ -18,14 +18,12 @@ body {
   font-size: 1.3rem;
 }
 
-/* Status badge pill */
 .badge {
   border-radius: 20px;
   padding: 5px 12px;
   font-weight: 500;
 }
 
-/* Smooth page transitions */
 .container, .container-fluid {
   animation: fadeIn 0.2s ease-in;
 }
@@ -33,4 +31,223 @@ body {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Gear Shifters Home ── */
+
+.gs-hero {
+  position: relative;
+  min-height: 92vh;
+  background: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+}
+
+.gs-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.82) 0%, rgba(180,0,0,0.55) 100%);
+}
+
+.gs-hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 80px 16px;
+}
+
+.gs-badge {
+  display: inline-block;
+  background: rgba(220,53,69,0.25);
+  border: 1px solid rgba(220,53,69,0.6);
+  color: #ff8a8a;
+  border-radius: 50px;
+  padding: 6px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Stats bar */
+.gs-stats-bar {
+  background: #1a1a1a;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 20px 16px;
+  gap: 12px;
+}
+
+.gs-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  min-width: 100px;
+}
+
+.gs-stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #dc3545;
+  line-height: 1;
+}
+
+.gs-stat-label {
+  font-size: 0.75rem;
+  opacity: 0.6;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Gallery */
+.gs-gallery-card {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gs-gallery-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(220,53,69,0.25);
+}
+
+.gs-gallery-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.gs-gallery-card:hover .gs-gallery-img {
+  transform: scale(1.06);
+}
+
+.gs-gallery-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.75));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 20px 12px 10px;
+}
+
+/* Services */
+.gs-services-bg {
+  background: #111;
+}
+
+.gs-services-bg h2,
+.gs-services-bg p.text-danger {
+  color: #fff !important;
+}
+
+.gs-service-card {
+  background: #1e1e1e;
+  border-radius: 14px;
+  padding: 28px 20px;
+  text-align: center;
+  border: 1px solid #2a2a2a;
+  transition: border-color 0.3s, transform 0.3s;
+  height: 100%;
+}
+
+.gs-service-card:hover {
+  border-color: #dc3545;
+  transform: translateY(-4px);
+}
+
+.gs-service-card h6 {
+  color: #fff;
+}
+
+.gs-service-card .text-muted {
+  color: #888 !important;
+}
+
+.gs-service-icon {
+  font-size: 42px;
+  line-height: 1;
+}
+
+/* Why Us */
+.gs-why-bg {
+  background: #f1f3f5;
+}
+
+.gs-why-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  transition: box-shadow 0.3s, transform 0.3s;
+  height: 100%;
+}
+
+.gs-why-card:hover {
+  box-shadow: 0 8px 28px rgba(220,53,69,0.18);
+  transform: translateY(-4px);
+}
+
+.gs-why-icon {
+  font-size: 40px;
+  line-height: 1;
+}
+
+/* Feature strip */
+.gs-feature-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  height: 100%;
+  transition: transform 0.3s;
+}
+
+.gs-feature-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Contact */
+.gs-contact-bg {
+  background: #1a1a1a;
+}
+
+.gs-contact-bg h2,
+.gs-contact-bg p.text-danger {
+  color: #fff !important;
+}
+
+.gs-contact-card {
+  background: #242424;
+  border-radius: 16px;
+  padding: 36px 24px;
+  border: 1px solid #333;
+}
+
+.gs-contact-card h6 {
+  color: #fff;
+}
+
+.gs-contact-card .text-muted {
+  color: #888 !important;
+}
+
+.gs-contact-icon {
+  font-size: 44px;
+  line-height: 1;
+}
+
+/* Footer */
+.gs-footer {
+  background: #0d0d0d;
+  color: #fff;
+  padding: 28px 16px;
 }
