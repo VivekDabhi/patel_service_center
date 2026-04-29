@@ -34,14 +34,23 @@ export default function Register() {
             <form onSubmit={handleSubmit}>
               {[
                 { label: 'Full Name', field: 'name', type: 'text', placeholder: 'Your name' },
-                { label: 'Phone Number', field: 'phone', type: 'text', placeholder: '+919876543210' },
+                { label: 'Phone Number', field: 'phone', type: 'tel', placeholder: '9876543210' },
                 { label: 'Email (optional)', field: 'email', type: 'email', placeholder: 'you@example.com' },
                 { label: 'Password', field: 'password', type: 'password', placeholder: 'Min 8 characters' },
               ].map(({ label, field, type, placeholder }) => (
                 <div className="mb-3" key={field}>
                   <label className="form-label">{label}</label>
-                  <input className="form-control" type={type} placeholder={placeholder}
-                    required={field !== 'email'} value={form[field]} onChange={set(field)} />
+                  {field === 'phone' ? (
+                    <div className="input-group">
+                      <span className="input-group-text">+91</span>
+                      <input className="form-control" type="tel" placeholder={placeholder}
+                        maxLength={10} required value={form.phone}
+                        onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })} />
+                    </div>
+                  ) : (
+                    <input className="form-control" type={type} placeholder={placeholder}
+                      required={field !== 'email'} value={form[field]} onChange={set(field)} />
+                  )}
                 </div>
               ))}
               <button className="btn btn-danger w-100" disabled={loading}>

@@ -25,7 +25,10 @@ def register(data: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=Token)
 def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.phone == form.username).first()
+    phone = form.username.strip()
+    if not phone.startswith('+91'):
+        phone = f'+91{phone}'
+    user = db.query(User).filter(User.phone == phone).first()
     if not user or not verify_password(form.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = create_access_token({"sub": str(user.id)})

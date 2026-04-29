@@ -36,8 +36,12 @@ export default function Login() {
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label className="form-label">Phone Number</label>
-                <input className="form-control" placeholder="e.g. +919876543210" required
-                  value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} />
+                <div className="input-group">
+                  <span className="input-group-text">+91</span>
+                  <input className="form-control" placeholder="9876543210" required
+                    maxLength={10} value={form.username}
+                    onChange={e => setForm({ ...form, username: e.target.value.replace(/\D/g, '').slice(0, 10) })} />
+                </div>
               </div>
               <div className="mb-3">
                 <label className="form-label">Password</label>
