@@ -1,0 +1,25 @@
+# Python venv
+.service_station/
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment files
+.env
+
+# Frontend
+web/node_modules/
+web/build/
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+
+# Logs
+debug.log
